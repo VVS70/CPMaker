@@ -93,7 +93,7 @@ public class Main extends Activity {
 
                     fOut.flush();
                     fOut.close();
-
+                    //TODO: Gallery does not display the saved image. ?!
                     MediaStore.Images.Media.insertImage(getContentResolver(),
                             file.getAbsolutePath(),
                             file.getName(),
