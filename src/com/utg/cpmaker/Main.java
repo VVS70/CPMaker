@@ -36,9 +36,9 @@ public class Main extends Activity {
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
-               menu.add(0,0,0,"Crop");
+               menu.add(0,0,0,"Crop image");
                menu.add(0,1,1,"AutoCrop");
-               menu.add(0,2,1,"Reload");
+               menu.add(0,2,1,"Try again");
                menu.add(0,3,1,"Save Image");
 
       return super.onCreateOptionsMenu(menu);
@@ -48,7 +48,7 @@ public class Main extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int k=item.getItemId();
         switch (k) {
-            case 0:{
+            case 0:{ // manual crop image
                 setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 Bitmap rPicture = BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
@@ -56,7 +56,7 @@ public class Main extends Activity {
                 AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale);
                 imageViewRound.setImageDrawable(roundedImage);
                 break;}
-            case 1:{
+            case 1:{ // auto crop image
                 setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 Bitmap rPicture = BitmapFactory.decodeResource(getResources(), R.drawable.pic1); //,options);
@@ -64,12 +64,12 @@ public class Main extends Activity {
                 AutoRoundImage roundedImage = new AutoRoundImage(rPicture);
                 imageViewRound.setImageDrawable(roundedImage);
                 break;}
-            case 2:{
+            case 2:{ //reload image
 
-
+                setContentView(myView);
 
                 break;}
-            case 3:{
+            case 3:{  //save image
 
                 String folderToSave =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
@@ -88,7 +88,7 @@ public class Main extends Activity {
                     imageViewRound.setDrawingCacheEnabled(true);
                     Bitmap bitmap = imageViewRound.getDrawingCache();
 
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
                     fOut.flush();
                     fOut.close();
