@@ -36,23 +36,59 @@ public class AutoRoundImage extends Drawable {
         mBitmapHeight = mBitmap.getHeight();
         bManual  = false;
     }
-    public AutoRoundImage(Bitmap bitmap, float cX, float cY, float radius, float scaleFactor) {
+
+    public AutoRoundImage(Bitmap bitmap, float cX, float cY, float radius, float scaleFactor, boolean makeResize) {
+
+        final BitmapShader shader;
+
         mBitmap = bitmap;
         mRectF = new RectF();
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
-        final BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        mPaint.setShader(shader);
-        mBitmapWidth  = mBitmap.getWidth();
-        mBitmapHeight = mBitmap.getHeight();
 
         fLeft =(cX - radius) / scaleFactor;
-        fTop =(cY + radius) / scaleFactor;
-        fRight =(cX + radius) / scaleFactor;
-        fBottom =(cY - radius) / scaleFactor;
+        fRight  =(cX + radius) / scaleFactor;
+        fBottom =(cY + radius) / scaleFactor;
+        fTop  =(cY - radius) / scaleFactor;
 
-        bManual  = true;
+        if (makeResize) {
+            int iLeft = (int) fLeft;
+            int iTop = (int) fTop;
+            int iWidth = (int) (fRight - fLeft);
+            int iHeight = (int) (fBottom - fTop);
+
+            if (iLeft < 0) {
+                iLeft = 1;
+            }
+            if (iLeft > bitmap.getWidth()) {
+                iLeft = bitmap.getWidth() - 2;
+            }
+            if (iTop < 0) {
+                iTop = 1;
+            }
+            if (iTop > bitmap.getHeight()) {
+                iTop = bitmap.getHeight() - 2;
+            }
+            if (iLeft + iWidth >= bitmap.getWidth()) {
+                iWidth = bitmap.getWidth() - iLeft;
+            }
+            if (iTop + iHeight >= bitmap.getHeight()) {
+                iHeight = bitmap.getHeight() - iTop;
+            }
+
+            Bitmap tmpBmp = Bitmap.createBitmap(bitmap, iLeft, iTop, iWidth, iHeight);
+            shader = new BitmapShader(tmpBmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mBitmapWidth  = tmpBmp.getWidth();
+            mBitmapHeight = tmpBmp.getHeight();
+        }
+        else { // don't need resize
+            shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mBitmapWidth  = mBitmap.getWidth();
+            mBitmapHeight = mBitmap.getHeight();
+            bManual  = true;
+        }
+        mPaint.setShader(shader);
     }
 
     @Override

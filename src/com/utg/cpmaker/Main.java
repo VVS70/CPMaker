@@ -36,30 +36,31 @@ public class Main extends Activity {
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
-               menu.add(0,0,0,"Crop image");
-               menu.add(0,1,1,"AutoCrop");
-               menu.add(0,2,1,"Try again");
-               menu.add(0,3,1,"Save Image");
+               menu.add(Menu.FIRST,0,0,"Crop image");
+               menu.add(Menu.FIRST,4,0,"Crop&Resize");
+               menu.add(Menu.FIRST,1,1,"AutoCrop");
+               menu.add(Menu.FIRST,2,2,"Try again");
+               menu.add(Menu.FIRST,3,3,"Save Image");
 
       return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int k=item.getItemId();
-        switch (k) {
-            case 0:{ // manual crop image
+        int menuKey=item.getItemId();
+        switch (menuKey) {
+            case 0: case 4:{ // manual crop image (0) ||  manual crop&resize (4)
                 setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 Bitmap rPicture = BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
                 imageViewRound.setImageBitmap(rPicture);
-                AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale);
+                AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
                 imageViewRound.setImageDrawable(roundedImage);
                 break;}
             case 1:{ // auto crop image
                 setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
-                Bitmap rPicture = BitmapFactory.decodeResource(getResources(), R.drawable.pic1); //,options);
+                Bitmap rPicture = BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
                 imageViewRound.setImageBitmap(rPicture);
                 AutoRoundImage roundedImage = new AutoRoundImage(rPicture);
                 imageViewRound.setImageDrawable(roundedImage);
@@ -108,6 +109,7 @@ public class Main extends Activity {
                 imageViewRound.getDrawingCache(true);
 
                 break;}
+
         }
         return super.onOptionsItemSelected(item);
     }
