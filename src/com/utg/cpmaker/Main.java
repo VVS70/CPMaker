@@ -70,20 +70,35 @@ public class Main extends Activity {
 
                 break;}
             case 3:{
-                String folderToSave = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
+
+                String folderToSave =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
+
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 TextView txtView = (TextView)findViewById(R.id.textView);
 
                 OutputStream fOut = null;
                 try {
-                    File file = new File(folderToSave,"RoundedPic"+Long.toHexString(System.currentTimeMillis())+".jpg");
+
+                    File file = new File(folderToSave,"RoundedPic"+
+                            Long.toHexString(System.currentTimeMillis())+".jpg");
+
                     fOut = new FileOutputStream(file);
-                    Bitmap bitmap = (Bitmap) imageViewRound.getDrawingCache(true);
+                    imageViewRound.buildDrawingCache();
+                    imageViewRound.setDrawingCacheEnabled(true);
+                    Bitmap bitmap = imageViewRound.getDrawingCache();
+
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
                     fOut.flush();
                     fOut.close();
-                   // MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-                    txtView.setText("Saved.");
+
+                    MediaStore.Images.Media.insertImage(getContentResolver(),
+                            file.getAbsolutePath(),
+                            file.getName(),
+                            file.getName());
+
+                    txtView.setText("Image saved!");
                 }
                 catch (Exception e)
                 {
