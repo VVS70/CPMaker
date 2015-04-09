@@ -29,7 +29,7 @@ public class Main extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myView=new GraphicsView(this, myBitmap);
+        myView=new GraphicsView(this);
         setContentView(myView);
     }
 
