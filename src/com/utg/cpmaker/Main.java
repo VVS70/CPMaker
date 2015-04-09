@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 
 public class Main extends Activity {
-    public static Bitmap myBitmap;
     public GraphicsView myView;
 
     @Override
