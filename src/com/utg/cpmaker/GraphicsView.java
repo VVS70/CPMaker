@@ -9,7 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.view.ViewGroup.LayoutParams;
+//import android.view.ViewGroup.LayoutParams;
 
 public class GraphicsView extends View{
     float centerX = 0;
@@ -27,7 +27,8 @@ public class GraphicsView extends View{
         paint.setStyle(Style.STROKE);
         paint.setStrokeWidth(3.0f);
         myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
-        this.setLayoutParams(new LayoutParams(100, 100)); // set size of view. Don't work :(
+        //this.setLayoutParams(new LayoutParams(100, 100)); // set size of view. Don't work :(
+
     }
     @Override
     protected void onDraw(Canvas canvas)

@@ -3,15 +3,7 @@ package com.utg.cpmaker;
 /**
  * Created by VVS on 06.04.2015.
  */
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -47,10 +39,10 @@ public class AutoRoundImage extends Drawable {
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
 
-        fLeft =(cX - radius) / scaleFactor;
+        fLeft   =(cX - radius) / scaleFactor;
         fRight  =(cX + radius) / scaleFactor;
         fBottom =(cY + radius) / scaleFactor;
-        fTop  =(cY - radius) / scaleFactor;
+        fTop    =(cY - radius) / scaleFactor;
 
         if (makeResize) {
             int iLeft = (int) fLeft;
@@ -83,6 +75,10 @@ public class AutoRoundImage extends Drawable {
             mBitmapHeight = tmpBmp.getHeight();
         }
         else { // don't need resize
+
+//            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+//            mPaint.setColorFilter(createDimFilter());
+
             shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mBitmapWidth  = mBitmap.getWidth();
             mBitmapHeight = mBitmap.getHeight();
@@ -96,7 +92,6 @@ public class AutoRoundImage extends Drawable {
         if (bManual) {
             mRectF.set(fLeft, fTop, fRight, fBottom);
         }
-
         canvas.drawOval(mRectF, mPaint);
     }
     @Override
@@ -144,6 +139,13 @@ public class AutoRoundImage extends Drawable {
     }
     public Bitmap getBitmap() {
         return mBitmap;
+    }
+    private ColorFilter createDimFilter() {
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0f);
+        float scale = 0.5f;
+        colorMatrix.setScale(scale, scale, scale, 1f);
+        return new ColorMatrixColorFilter(colorMatrix);
     }
 
 }

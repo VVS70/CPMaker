@@ -1,12 +1,12 @@
 package com.utg.cpmaker;
 
 import android.app.Activity;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import android.util.Log;
 
@@ -19,8 +19,10 @@ import java.io.OutputStream;
 import java.io.FileOutputStream;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
-import android.widget.TextView;
-
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.*;
+import com.utg.cpmaker.ColorPicker.ColorPicker;
 
 public class Main extends Activity {
     public GraphicsView myView;
@@ -32,15 +34,12 @@ public class Main extends Activity {
         setContentView(myView);
     }
 
-
-
     public boolean onCreateOptionsMenu(Menu menu) {
                menu.add(Menu.FIRST,0,0,"Crop image");
                menu.add(Menu.FIRST,4,0,"Crop&Resize");
                menu.add(Menu.FIRST,1,1,"AutoCrop");
                menu.add(Menu.FIRST,2,2,"Try again");
-               menu.add(Menu.FIRST,3,3,"Save Image");
-
+               menu.add(Menu.FIRST,3, 3, "Save Image");
       return super.onCreateOptionsMenu(menu);
     }
 
@@ -55,6 +54,9 @@ public class Main extends Activity {
                 imageViewRound.setImageBitmap(rPicture);
                 AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
                 imageViewRound.setImageDrawable(roundedImage);
+                ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
+                colorPicker.setColor(Color.BLACK);
+                colorPicker.setMonitor(imageViewRound);
                 break;}
             case 1:{ // auto crop image
                 setContentView(R.layout.main);
@@ -63,6 +65,9 @@ public class Main extends Activity {
                 imageViewRound.setImageBitmap(rPicture);
                 AutoRoundImage roundedImage = new AutoRoundImage(rPicture);
                 imageViewRound.setImageDrawable(roundedImage);
+                ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
+                colorPicker.setColor(Color.BLACK);
+                colorPicker.setMonitor(imageViewRound);
                 break;}
             case 2:{ //reload image
 
@@ -108,8 +113,8 @@ public class Main extends Activity {
                 imageViewRound.getDrawingCache(true);
 
                 break;}
-
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
