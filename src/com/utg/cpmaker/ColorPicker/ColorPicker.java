@@ -358,7 +358,7 @@ public class ColorPicker extends View {
             super.onRestoreInstanceState(state);
         }
     }
-
+    // added for CPMaker  - change ImageView background
     public void  setMonitor (ImageView imgView){
         needBackground = true;
         this.imgView = imgView;

@@ -9,7 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-//import android.view.ViewGroup.LayoutParams;
+
 
 public class GraphicsView extends View{
     float centerX = 0;
@@ -20,19 +20,16 @@ public class GraphicsView extends View{
     private Paint paint;
     double rX,rY =0;
 
-    public GraphicsView(Context context) {
+    public GraphicsView(Context context, String filePath){
         super(context);
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Style.STROKE);
         paint.setStrokeWidth(3.0f);
-        myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
-        //this.setLayoutParams(new LayoutParams(100, 100)); // set size of view. Don't work :(
-
+        myBitmap = BitmapFactory.decodeFile(filePath);
     }
     @Override
-    protected void onDraw(Canvas canvas)
-    {
+    protected void onDraw(Canvas canvas){
         fScale =Math.min((float)canvas.getWidth() / myBitmap.getWidth() , (float)canvas.getHeight() / myBitmap.getHeight());
         canvas.save();
         canvas.scale(fScale , fScale );
@@ -40,8 +37,7 @@ public class GraphicsView extends View{
         canvas.restore();
         canvas.drawCircle(centerX, centerY, circleRadius, paint);
      }
-    public boolean onTouchEvent(MotionEvent event)
-    {
+    public boolean onTouchEvent(MotionEvent event){
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
             centerX = event.getX();
             centerY = event.getY();
@@ -57,6 +53,9 @@ public class GraphicsView extends View{
         return true;
     }
 
+    public Bitmap getOriginBitmap (){
+        return myBitmap;
+    }
 
 
 }

@@ -1,8 +1,5 @@
 package com.utg.cpmaker;
 
-/**
- * Created by VVS on 06.04.2015.
- */
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -24,8 +21,7 @@ public class AutoRoundImage extends Drawable {
         mPaint.setDither(true);
         final BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         mPaint.setShader(shader);
-        mBitmapWidth  = mBitmap.getWidth();
-        mBitmapHeight = mBitmap.getHeight();
+        mBitmapWidth  =  mBitmapHeight = (mBitmap.getWidth()>mBitmap.getHeight())?mBitmap.getWidth():mBitmap.getHeight();
         bManual  = false;
     }
 
@@ -73,6 +69,7 @@ public class AutoRoundImage extends Drawable {
             shader = new BitmapShader(tmpBmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mBitmapWidth  = tmpBmp.getWidth();
             mBitmapHeight = tmpBmp.getHeight();
+            tmpBmp.recycle();
         }
         else { // don't need resize
 
