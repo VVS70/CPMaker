@@ -1,10 +1,11 @@
 package com.utg.cpmaker;
 
 import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-public class AutoRoundImage extends Drawable {
+public class AutoRoundImage extends BitmapDrawable {
     private  Bitmap mBitmap;
     private  Paint mPaint;
     private  RectF mRectF;
@@ -12,6 +13,7 @@ public class AutoRoundImage extends Drawable {
     private  int mBitmapHeight;
     private  float fLeft, fTop, fRight, fBottom = 0;
     private  boolean bManual  = false;
+
 
     public AutoRoundImage(Bitmap bitmap) {
         mBitmap = bitmap;
@@ -39,7 +41,6 @@ public class AutoRoundImage extends Drawable {
         fRight  =(cX + radius) / scaleFactor;
         fBottom =(cY + radius) / scaleFactor;
         fTop    =(cY - radius) / scaleFactor;
-
         if (makeResize) {
             int iLeft = (int) fLeft;
             int iTop = (int) fTop;
@@ -91,6 +92,7 @@ public class AutoRoundImage extends Drawable {
         }
         canvas.drawOval(mRectF, mPaint);
     }
+
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
@@ -134,9 +136,11 @@ public class AutoRoundImage extends Drawable {
         mPaint.setDither(dither);
         invalidateSelf();
     }
+    /*
     public Bitmap getBitmap() {
         return mBitmap;
     }
+    */
     private ColorFilter createDimFilter() {
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0f);

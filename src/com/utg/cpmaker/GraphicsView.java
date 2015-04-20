@@ -28,15 +28,19 @@ public class GraphicsView extends View{
         paint.setStrokeWidth(3.0f);
         myBitmap = BitmapFactory.decodeFile(filePath);
     }
+
     @Override
     protected void onDraw(Canvas canvas){
         fScale =Math.min((float)canvas.getWidth() / myBitmap.getWidth() , (float)canvas.getHeight() / myBitmap.getHeight());
         canvas.save();
-        canvas.scale(fScale , fScale );
+        canvas.scale(fScale, fScale);
         canvas.drawBitmap(myBitmap, 0, 0, null);
         canvas.restore();
+
         canvas.drawCircle(centerX, centerY, circleRadius, paint);
+
      }
+
     public boolean onTouchEvent(MotionEvent event){
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
             centerX = event.getX();

@@ -1,38 +1,38 @@
 package com.utg.cpmaker;
 
 import android.app.Activity;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.*;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.os.Environment;
-
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
-import android.graphics.drawable.BitmapDrawable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import android.provider.MediaStore;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.*;
 import com.utg.cpmaker.ColorPicker.ColorPicker;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.view.View;
-import android.provider.MediaStore;
-
+import android.util.Log;
 
 public class Main extends Activity {
+
     public GraphicsView myView;
+
+    //Constants
     private static final int SELECT_PICTURE_ACTIVITY_REQUEST_CODE = 0;
+    private static final int TAKE_PHOTO = 1;
+    private static final String CAMERA_FILE_PREFIX = "IMG_";
+    private static final String CAMERA_FILE_EXTENSION = ".jpg";
+    private static String photoPath = null;
+    private static AutoRoundImage roundedImage = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,8 +45,8 @@ public class Main extends Activity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-               menu.add(Menu.FIRST,0,0,"Crop image");
-               menu.add(Menu.FIRST,4,0,"Crop&Resize");
+               menu.add(Menu.FIRST, 0, 0, "Crop image");
+               menu.add(Menu.FIRST, 4, 0, "Crop&Resize");
                menu.add(Menu.FIRST,1,1,"AutoCrop");
                menu.add(Menu.FIRST, 2, 2, "Try again");
                menu.add(Menu.FIRST, 3, 3, "Save Image");
@@ -61,10 +61,11 @@ public class Main extends Activity {
                 setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 Bitmap rPicture = myView.getOriginBitmap();
-                                                         //BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
                 imageViewRound.setImageBitmap(rPicture);
-                AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
-                imageViewRound.setImageDrawable(roundedImage);
+                //roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
+                //imageViewRound.setImageDrawable(roundedImage);
+                Bitmap rImage = RoundCropBitmap.Create(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
+                imageViewRound.setImageBitmap(rImage);
                 ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
                 colorPicker.setColor(Color.BLACK);
                 colorPicker.setMonitor(imageViewRound);
@@ -74,7 +75,7 @@ public class Main extends Activity {
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 Bitmap rPicture = myView.getOriginBitmap();
                 imageViewRound.setImageBitmap(rPicture);
-                AutoRoundImage roundedImage = new AutoRoundImage(rPicture);
+                roundedImage = new AutoRoundImage(rPicture);
                 imageViewRound.setImageDrawable(roundedImage);
                 ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
                 colorPicker.setColor(Color.BLACK);
@@ -89,28 +90,31 @@ public class Main extends Activity {
 
                 String folderToSave =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
-                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
-                TextView txtView = (TextView)findViewById(R.id.textView);
-                OutputStream fOut = null;
-                try {
 
-                    File file = new File(folderToSave,"RoundedPic"+
-                            Long.toHexString(System.currentTimeMillis())+".jpg");
+                ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
+
+                TextView txtView = (TextView)findViewById(R.id.textView);
+
+                OutputStream fOut = null;
+
+                try {
+                    String fileName = folderToSave+"RndPic"+Long.toHexString(System.currentTimeMillis())+".jpg";
+                    File file = new File(fileName);
 
                     fOut = new FileOutputStream(file);
+
                     imageViewRound.buildDrawingCache();
                     imageViewRound.setDrawingCacheEnabled(true);
-                    Bitmap bitmap = imageViewRound.getDrawingCache();
 
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                    Bitmap bitmap = imageViewRound.getDrawingCache(false);
+                    //Bitmap bitmap = roundedImage.getBitmap();
+
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
 
                     fOut.flush();
                     fOut.close();
-                    //TODO: Gallery does not display the saved image. Why?!
-                    MediaStore.Images.Media.insertImage(getContentResolver(),
-                            file.getAbsolutePath(),
-                            file.getName(),
-                            file.getName());
+
+                    galleryAddPic(fileName);
 
                     txtView.setText("Image saved!");
                 }
@@ -132,6 +136,27 @@ public class Main extends Activity {
             startActivityForResult(intent, SELECT_PICTURE_ACTIVITY_REQUEST_CODE);
         }
 
+        public void getFromCamera(View v){
+            try {
+                Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                 File photo = null;
+                  try {
+                  photo = createImageFile();
+                  } catch (IOException e) {
+                      e.printStackTrace();
+                      photo = null;
+                      photoPath = null;
+                  }
+                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                startActivityForResult(captureIntent, TAKE_PHOTO);
+            } catch (Exception e) {
+                String errorMessage = "Camera don't work:(";
+                Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+
+
         @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
             super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -151,8 +176,56 @@ public class Main extends Activity {
                         cursor.close();
                     }
                     break;
+                case TAKE_PHOTO:
+                    if (resultCode == RESULT_OK) {
+
+                         if (photoPath!=null) {
+                            myView=new GraphicsView(this,photoPath);
+                            setContentView(myView);
+                         }
+                    }
+                    break;
             }
         }
-
-
+    private void galleryAddPic(String mCurrentPhotoPath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
     }
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = CAMERA_FILE_PREFIX + timeStamp + "_";
+        File image = File.createTempFile(
+                imageFileName,
+                CAMERA_FILE_EXTENSION,
+                getAlbumDir()
+        );
+        photoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private File getAlbumDir() {
+        File storageDir = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            storageDir = Environment.getExternalStoragePublicDirectory(
+                         Environment.DIRECTORY_PICTURES);
+            if (storageDir != null) {
+                if (! storageDir.mkdirs()) {
+                    if (! storageDir.exists()){
+                        Log.d("Camera: ", "failed to create directory");
+                        return null;
+                    }
+                }
+            }
+        } else {
+            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+        }
+        return storageDir;
+    }
+
+
+
+}
