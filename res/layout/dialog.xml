@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="1" android:id="@+id/dialogLayout"
+              android:focusableInTouchMode="true"
+              android:background="@drawable/bkg_xml">
+
+
+    <Button
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Get picture  from Camera"
+android:id="@+id/btnCamera" android:layout_gravity="center_horizontal" android:layout_marginTop="150dp"
+android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
+android:onClick="getFromCamera"/>
+<Button
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Get picture from Gallery"
+android:id="@+id/btnGallery" android:layout_gravity="center_horizontal" android:layout_marginTop="250dp"
+android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
+android:onClick="selectPicture"/>
+</FrameLayout>
