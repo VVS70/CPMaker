@@ -31,17 +31,16 @@ public class GraphicsView extends ImageView{
     }
 
     public GraphicsView(Context context, AttributeSet attrs, int defStyle) {
-        this(context);
+        super(context, attrs, defStyle);
+        init();
     }
 
     public GraphicsView(Context context, AttributeSet attrs) {
-        this(context);
-
+        super(context, attrs);
+        init();
     }
 
-    public GraphicsView(Context context){
-        super(context,null,0);
-
+    private void init() {
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Style.STROKE);
@@ -68,6 +67,11 @@ public class GraphicsView extends ImageView{
         options.inSampleSize = scale;
         options.inJustDecodeBounds = false;
         sourceBitmap = BitmapFactory.decodeFile(fullFileName, options);
+    }
+
+    public GraphicsView(Context context){
+        super(context);
+        init();
     }
 
     @Override

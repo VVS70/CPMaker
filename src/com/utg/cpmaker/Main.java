@@ -68,12 +68,12 @@ public class Main extends Activity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-               menu.add(Menu.FIRST, 0, 0, "Crop image");
-               menu.add(Menu.FIRST, 4, 0, "Crop&Resize");
-               menu.add(Menu.FIRST, 1, 1, "AutoCrop");
-               menu.add(Menu.FIRST, 2, 2, "Try again");
-               menu.add(Menu.FIRST, 3, 3, "Save Image");
-      return super.onCreateOptionsMenu(menu);
+        menu.add(Menu.FIRST, 0, 0, "Crop image");
+        menu.add(Menu.FIRST, 4, 0, "Crop&Resize");
+        menu.add(Menu.FIRST, 1, 1, "AutoCrop");
+        menu.add(Menu.FIRST, 2, 2, "Try again");
+        menu.add(Menu.FIRST, 3, 3, "Save Image");
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Main extends Activity {
             case 3:{  //save image
 
                 String folderToSave =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
                 /*
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 TextView txtView = (TextView)findViewById(R.id.textView);
@@ -154,67 +154,67 @@ public class Main extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-        public void selectPicture(View v) {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, SELECT_PICTURE_ACTIVITY_REQUEST_CODE);
-        }
+    public void selectPicture(View v) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_PICTURE_ACTIVITY_REQUEST_CODE);
+    }
 
-        public void getFromCamera(View v){
+    public void getFromCamera(View v){
+        try {
+            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File photo = null;
             try {
-                Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                 File photo = null;
-                  try {
-                  photo = createImageFile();
-                  } catch (IOException e) {
-                      e.printStackTrace();
-                      photo = null;
-                      photoPath = null;
-                  }
-                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                startActivityForResult(captureIntent, TAKE_PHOTO);
-            } catch (Exception e) {
-                String errorMessage = "Camera don't work:(";
-                Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-                toast.show();
+                photo = createImageFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                photo = null;
+                photoPath = null;
             }
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            startActivityForResult(captureIntent, TAKE_PHOTO);
+        } catch (Exception e) {
+            String errorMessage = "Camera don't work:(";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
         }
+    }
 
 
-        @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-            super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-            switch (requestCode) {
-                case SELECT_PICTURE_ACTIVITY_REQUEST_CODE:
-                    if (resultCode == RESULT_OK) {
-                        Uri selectedImage = imageReturnedIntent.getData();
-                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                        if (cursor.moveToFirst()) {
-                            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                            String filePath = cursor.getString(columnIndex);
-                            //setContentView(myView);
-                            GraphicsView.setParam(filePath, size);
-                            setContentView(R.layout.edit_layout);
-                        }
-                        cursor.close();
+        switch (requestCode) {
+            case SELECT_PICTURE_ACTIVITY_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                    if (cursor.moveToFirst()) {
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String filePath = cursor.getString(columnIndex);
+                        //setContentView(myView);
+                        GraphicsView.setParam(filePath, size);
+                        setContentView(R.layout.edit_layout);
                     }
-                    break;
-                case TAKE_PHOTO:
-                    if (resultCode == RESULT_OK) {
+                    cursor.close();
+                }
+                break;
+            case TAKE_PHOTO:
+                if (resultCode == RESULT_OK) {
 
-                         if (photoPath!=null) {
-                            GraphicsView.setParam(photoPath, size);
-                            GraphicsView myView= (GraphicsView) findViewById(R.id.resView);
-                            //new GraphicsView(this);
-                            //setContentView(myView);
-                            setContentView(R.layout.edit_layout);
-                         }
+                    if (photoPath!=null) {
+                        GraphicsView.setParam(photoPath, size);
+                        GraphicsView myView= (GraphicsView) findViewById(R.id.resView);
+                        //new GraphicsView(this);
+                        //setContentView(myView);
+                        setContentView(R.layout.edit_layout);
                     }
-                    break;
-            }
+                }
+                break;
         }
+    }
     private void galleryAddPic(String mCurrentPhotoPath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
@@ -239,7 +239,7 @@ public class Main extends Activity {
         File storageDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             storageDir = Environment.getExternalStoragePublicDirectory(
-                         Environment.DIRECTORY_PICTURES);
+                    Environment.DIRECTORY_PICTURES);
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
                     if (! storageDir.exists()){
@@ -266,7 +266,7 @@ public class Main extends Activity {
         imageViewRound.setImageDrawable(roundedImage);
          */
         AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,false);
-         myView.setImage(roundedImage.getBitmap());
+        myView.setImage(roundedImage.getBitmap());
 
 
         ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
