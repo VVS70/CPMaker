@@ -34,5 +34,8 @@
             android:autoText="false"
             android:textIsSelectable="false"
             android:textSize="10dp"/>
+
+
+
 </FrameLayout>
 

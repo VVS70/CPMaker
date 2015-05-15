@@ -1,6 +1,9 @@
 package com.utg.cpmaker;
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.*;
 import android.graphics.Bitmap;
@@ -21,11 +24,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.view.View;
 import android.util.Log;
+import android.view.Display;
+import android.graphics.Point;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.app.ProgressDialog;
+import android.app.Application;
+import android.content.Context;
+import android.util.DisplayMetrics;
+
 
 public class Main extends Activity {
 
-    public GraphicsView myView;
-
+    private Point size;
     //Constants
     private static final int SELECT_PICTURE_ACTIVITY_REQUEST_CODE = 0;
     private static final int TAKE_PHOTO = 1;
@@ -33,13 +44,25 @@ public class Main extends Activity {
     private static final String CAMERA_FILE_EXTENSION = ".jpg";
     private static String photoPath = null;
     private static AutoRoundImage roundedImage = null;
+    private String tmpFile ="";
+    private int menuKey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
+        Display display = getWindowManager().getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        */
+
+        size = new Point();
+        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        size.set((int)((dpWidth-30)*displayMetrics.density),(int)((dpHeight-184)*displayMetrics.density));
         setContentView(R.layout.dialog);
-        //Button btnGallery = (Button) findViewById(R.id.btnGallery);
-        //Button btnCamera  = (Button) findViewById(R.id.btnGallery);
+
         //myView=new GraphicsView(this,"");
         //setContentView(myView);
     }
@@ -47,7 +70,7 @@ public class Main extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
                menu.add(Menu.FIRST, 0, 0, "Crop image");
                menu.add(Menu.FIRST, 4, 0, "Crop&Resize");
-               menu.add(Menu.FIRST,1,1,"AutoCrop");
+               menu.add(Menu.FIRST, 1, 1, "AutoCrop");
                menu.add(Menu.FIRST, 2, 2, "Try again");
                menu.add(Menu.FIRST, 3, 3, "Save Image");
       return super.onCreateOptionsMenu(menu);
@@ -55,23 +78,22 @@ public class Main extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int menuKey=item.getItemId();
+        menuKey=item.getItemId();
         switch (menuKey) {
             case 0: case 4:{ // manual crop image (0) ||  manual crop&resize (4)
+/*                Bitmap rPicture = myView.getOriginBitmap();
                 setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
-                Bitmap rPicture = myView.getOriginBitmap();
-                imageViewRound.setImageBitmap(rPicture);
-                //roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
-                //imageViewRound.setImageDrawable(roundedImage);
-                Bitmap rImage = RoundCropBitmap.Create(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
-                imageViewRound.setImageBitmap(rImage);
+                AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
+                imageViewRound.setImageDrawable(roundedImage);
+
                 ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
                 colorPicker.setColor(Color.BLACK);
                 colorPicker.setMonitor(imageViewRound);
+*/
                 break;}
             case 1:{ // auto crop image
-                setContentView(R.layout.main);
+/*                setContentView(R.layout.main);
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
                 Bitmap rPicture = myView.getOriginBitmap();
                 imageViewRound.setImageBitmap(rPicture);
@@ -80,51 +102,53 @@ public class Main extends Activity {
                 ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
                 colorPicker.setColor(Color.BLACK);
                 colorPicker.setMonitor(imageViewRound);
+*/
                 break;}
             case 2:{ //reload image
 
-                setContentView(myView);
+                setContentView(R.layout.main);
 
                 break;}
             case 3:{  //save image
 
                 String folderToSave =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
-
+                /*
                 ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
-
                 TextView txtView = (TextView)findViewById(R.id.textView);
+                */
+  /*
+                tmpFile =
+                        RoundCropBitmap.Create(myView.getFullFileName(),
+                                myView.centerX,
+                                myView.centerY,
+                                myView.circleRadius,
+                                myView.getScale(),
+                                myView.getfScale(),
+                                (menuKey == 4));
 
-                OutputStream fOut = null;
+                String fileName = folderToSave+"RndPic"+Long.toHexString(System.currentTimeMillis());
+                ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
 
-                try {
-                    String fileName = folderToSave+"RndPic"+Long.toHexString(System.currentTimeMillis())+".jpg";
-                    File file = new File(fileName);
-
-                    fOut = new FileOutputStream(file);
-
-                    imageViewRound.buildDrawingCache();
-                    imageViewRound.setDrawingCacheEnabled(true);
-
-                    Bitmap bitmap = imageViewRound.getDrawingCache(false);
-                    //Bitmap bitmap = roundedImage.getBitmap();
-
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-
-                    fOut.flush();
-                    fOut.close();
-
-                    galleryAddPic(fileName);
-
-                    txtView.setText("Image saved!");
+                if (RoundCropBitmap.SaveResult(tmpFile,fileName,colorPicker.getColor())) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
+                    builder.setTitle("  File saved!")
+                            .setMessage("Name: "+fileName)
+                            .setIcon(R.drawable.ic_info)
+                            .setCancelable(false)
+                            .setNegativeButton("ОК",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
-                catch (Exception e)
-                {
-                    txtView.setText(e.getMessage().toString());
-                }
-
-                imageViewRound.getDrawingCache(true);
-
+                File file = new File(tmpFile);
+                if (file.exists()) { file.delete();};
+                //deleteFile(tmpFile);
+   */
                 break;}
         }
         return super.onOptionsItemSelected(item);
@@ -170,8 +194,9 @@ public class Main extends Activity {
                         if (cursor.moveToFirst()) {
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                             String filePath = cursor.getString(columnIndex);
-                            myView=new GraphicsView(this,filePath);
-                            setContentView(myView);
+                            //setContentView(myView);
+                            GraphicsView.setParam(filePath, size);
+                            setContentView(R.layout.edit_layout);
                         }
                         cursor.close();
                     }
@@ -180,8 +205,11 @@ public class Main extends Activity {
                     if (resultCode == RESULT_OK) {
 
                          if (photoPath!=null) {
-                            myView=new GraphicsView(this,photoPath);
-                            setContentView(myView);
+                            GraphicsView.setParam(photoPath, size);
+                            GraphicsView myView= (GraphicsView) findViewById(R.id.resView);
+                            //new GraphicsView(this);
+                            //setContentView(myView);
+                            setContentView(R.layout.edit_layout);
                          }
                     }
                     break;
@@ -221,11 +249,30 @@ public class Main extends Activity {
                 }
             }
         } else {
-            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+            Log.v(getString(R.string.app_name), "External storage is not mounted for READ/WRITE.");
         }
         return storageDir;
     }
 
+    public void cropImageClick(View v){
+        GraphicsView myView= (GraphicsView) findViewById(R.id.resView);
+        // TODO  Error "Could not execute method of the activity" WTF?!
+        Bitmap rPicture = myView.getOriginBitmap();
+
+        /*
+        setContentView(R.layout.main);
+        ImageView imageViewRound = (ImageView) findViewById(R.id.imageView_round);
+        AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,(menuKey==4));
+        imageViewRound.setImageDrawable(roundedImage);
+         */
+        AutoRoundImage roundedImage = new AutoRoundImage(rPicture,myView.centerX,myView.centerY,myView.circleRadius,myView.fScale,false);
+         myView.setImage(roundedImage.getBitmap());
 
 
+        ColorPicker colorPicker = (ColorPicker) findViewById(R.id.colorPicker);
+        colorPicker.setColor(Color.BLACK);
+        //colorPicker.setMonitor(imageViewRound);
+        colorPicker.setMonitor(myView);
+    }
 }
+

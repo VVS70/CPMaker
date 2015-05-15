@@ -14,7 +14,6 @@ public class AutoRoundImage extends BitmapDrawable {
     private  float fLeft, fTop, fRight, fBottom = 0;
     private  boolean bManual  = false;
 
-
     public AutoRoundImage(Bitmap bitmap) {
         mBitmap = bitmap;
         mRectF = new RectF();
@@ -73,9 +72,6 @@ public class AutoRoundImage extends BitmapDrawable {
             tmpBmp.recycle();
         }
         else { // don't need resize
-
-//            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-//            mPaint.setColorFilter(createDimFilter());
 
             shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mBitmapWidth  = mBitmap.getWidth();
@@ -136,11 +132,7 @@ public class AutoRoundImage extends BitmapDrawable {
         mPaint.setDither(dither);
         invalidateSelf();
     }
-    /*
-    public Bitmap getBitmap() {
-        return mBitmap;
-    }
-    */
+
     private ColorFilter createDimFilter() {
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0f);
@@ -148,5 +140,4 @@ public class AutoRoundImage extends BitmapDrawable {
         colorMatrix.setScale(scale, scale, scale, 1f);
         return new ColorMatrixColorFilter(colorMatrix);
     }
-
 }

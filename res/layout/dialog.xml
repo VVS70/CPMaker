@@ -19,7 +19,10 @@ android:onClick="getFromCamera"/>
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:text="Get picture from Gallery"
-android:id="@+id/btnGallery" android:layout_gravity="center_horizontal" android:layout_marginTop="250dp"
-android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
+android:id="@+id/btnGallery"
+android:layout_gravity="center_horizontal"
+android:layout_marginTop="250dp"
+android:layout_marginLeft="30dp"
+android:layout_marginRight="30dp"
 android:onClick="selectPicture"/>
 </FrameLayout>

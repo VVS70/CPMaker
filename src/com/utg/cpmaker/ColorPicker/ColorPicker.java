@@ -198,8 +198,7 @@ public class ColorPicker extends View {
                 valueAngleY * outerWheelRadius + centerY, valuePointerPaint);
 
         // drawing pointer arrow
-
-        if (arrowPointerSize > 0) {
+         if (arrowPointerSize > 0) {
             drawPointerArrow(canvas);
         }
 
@@ -359,7 +358,7 @@ public class ColorPicker extends View {
         }
     }
     // added for CPMaker  - change ImageView background
-    public void  setMonitor (ImageView imgView){
+    public void setMonitor (ImageView imgView){
         needBackground = true;
         this.imgView = imgView;
     }

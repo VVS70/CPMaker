@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/greybkg_xml"
+            android:id="@+id/buttons"
+            android:gravity="center_vertical|center_horizontal">
+        <ImageButton
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:id="@+id/imageButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/button_crop"
+                android:background="@drawable/greybkg_xml"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_centerHorizontal="true"
+                android:onClick="cropImageClick"/>
+        <ImageButton android:layout_width="95dp"
+                     android:layout_height="95dp"
+                     android:id="@+id/imageButton2"
+                     android:src="@drawable/button_clear_xml"
+                     android:background="@drawable/greybkg_xml"
+                     android:layout_toRightOf="@+id/imageButton"
+                     android:focusable="true"
+                     android:focusableInTouchMode="true"
+                     android:layout_centerHorizontal="true"/>
+        <ImageButton android:layout_width="95dp"
+                     android:layout_height="95dp"
+                     android:id="@+id/imageButton3"
+                     android:src="@drawable/button_clear_xml"
+                     android:background="@drawable/greybkg_xml"
+                     android:layout_toRightOf="@+id/imageButton2"
+                     android:focusable="true"
+                     android:focusableInTouchMode="true"
+                     android:layout_centerHorizontal="true"/>
+        <ImageButton android:layout_width="95dp"
+                     android:layout_height="95dp"
+                     android:id="@+id/imageButton4"
+                     android:src="@drawable/button_clear_xml"
+                     android:background="@drawable/greybkg_xml"
+                     android:focusable="true"
+                     android:focusableInTouchMode="true"
+                     android:layout_centerVertical="true"
+                     android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="385dp"
+            android:layout_below="@+id/imageButton"
+            android:background="@drawable/greybkg_xml"
+            android:id="@+id/workSpace">
+
+
+        <RelativeLayout
+                android:layout_width="3dp"
+                android:layout_height="fill_parent"
+                android:background="@drawable/left"
+                android:layout_marginLeft="1dp"
+                android:id="@+id/LeftSide">
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/LeftImage"
+                    android:src="@drawable/left"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/top_xml"
+                android:id="@+id/TopSide"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="5dp">
+        </RelativeLayout>
+
+
+        <view android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              class="com.utg.cpmaker.GraphicsView"
+              android:id="@+id/resView"
+              android:layout_alignParentTop="true"
+              android:layout_alignParentLeft="true" android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
+              android:layout_marginRight="10dp" android:layout_marginBottom="20dp"/>
+
+        <RelativeLayout
+                android:layout_width="5dp"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="1dp"
+                android:id="@+id/RightSide">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/RightImage"
+                    android:src="@drawable/right"/>
+    </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:id="@+id/Footer"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_below="@+id/RightSide"
+            android:background="@drawable/footer_bkg_xml">
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bitlab" android:src="@drawable/ico8bl"/>
+    </RelativeLayout>
+</LinearLayout>
